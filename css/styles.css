@@ -1,0 +1,477 @@
+:root {
+  --bg: #f5f7fb;
+  --surface: #ffffff;
+  --surface-soft: #f8fafc;
+  --text: #172033;
+  --muted: #667085;
+  --line: #d9e0ec;
+  --primary: #1f6feb;
+  --primary-dark: #1857b8;
+  --success: #0f8f62;
+  --warning: #c97713;
+  --danger: #c0392b;
+  --shadow: 0 18px 45px rgba(17, 24, 39, 0.08);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at top left, rgba(31, 111, 235, 0.10), transparent 36rem),
+    linear-gradient(180deg, #fbfcff 0%, var(--bg) 42%);
+  color: var(--text);
+  font-family: "Segoe UI", Arial, sans-serif;
+}
+
+button,
+input,
+select {
+  font: inherit;
+}
+
+.app {
+  width: min(100%, 1560px);
+  margin: 0 auto;
+  padding: 24px;
+}
+
+.app-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 18px;
+  margin-bottom: 18px;
+}
+
+.eyebrow,
+.board-label {
+  display: block;
+  margin-bottom: 5px;
+  color: var(--primary);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+h1,
+h2 {
+  margin: 0;
+  letter-spacing: 0;
+}
+
+h1 {
+  font-size: clamp(28px, 3vw, 42px);
+  line-height: 1.05;
+}
+
+h2 {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  font-size: 20px;
+}
+
+.header-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 40px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  padding: 9px 14px;
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.primary-button {
+  background: var(--primary);
+  color: #fff;
+  box-shadow: 0 10px 22px rgba(31, 111, 235, 0.22);
+}
+
+.primary-button:hover {
+  background: var(--primary-dark);
+}
+
+.ghost-button {
+  background: var(--surface);
+  color: var(--text);
+  border-color: var(--line);
+}
+
+.ghost-button:hover {
+  border-color: #b8c4d8;
+}
+
+.control-panel,
+.summary-grid,
+.board {
+  margin-top: 16px;
+}
+
+.control-panel {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(180px, 1fr));
+  gap: 14px;
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.86);
+  border: 1px solid rgba(217, 224, 236, 0.9);
+  border-radius: 8px;
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(10px);
+}
+
+.campo {
+  display: grid;
+  gap: 7px;
+}
+
+.campo label {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+.campo select,
+.campo input {
+  width: 100%;
+  min-height: 42px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--text);
+  padding: 9px 11px;
+  outline: none;
+}
+
+.campo select:focus,
+.campo input:focus,
+.excel input:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(31, 111, 235, 0.14);
+}
+
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(150px, 1fr));
+  gap: 12px;
+}
+
+.metric-card {
+  min-height: 112px;
+  padding: 16px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  box-shadow: 0 10px 28px rgba(17, 24, 39, 0.06);
+}
+
+.metric-card span,
+.metric-card small {
+  display: block;
+  color: var(--muted);
+}
+
+.metric-card span {
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.metric-card strong {
+  display: block;
+  margin: 7px 0 4px;
+  font-size: 32px;
+  line-height: 1;
+}
+
+.metric-card.success strong {
+  color: var(--success);
+}
+
+.metric-card.warning strong {
+  color: var(--warning);
+}
+
+.board {
+  overflow: hidden;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  box-shadow: var(--shadow);
+}
+
+.board-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 18px 18px 14px;
+  border-bottom: 1px solid var(--line);
+}
+
+#fechaLabel {
+  display: inline-flex;
+  align-items: center;
+  min-height: 28px;
+  border-radius: 999px;
+  padding: 4px 10px;
+  background: #eaf2ff;
+  color: var(--primary-dark);
+  font-size: 13px;
+  font-weight: 800;
+}
+
+#fechaLabel:empty {
+  display: none;
+}
+
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  min-height: 30px;
+  white-space: nowrap;
+  border-radius: 999px;
+  padding: 5px 11px;
+  background: #fff7ed;
+  color: #9a4c00;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.status-pill.ready {
+  background: #e9f8f1;
+  color: #08704a;
+}
+
+.tabla-container {
+  width: 100%;
+  overflow: auto;
+}
+
+.excel {
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.excel th,
+.excel td {
+  border-right: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  padding: 6px 4px;
+  text-align: center;
+  vertical-align: middle;
+  font-size: 11px;
+  line-height: 1.18;
+  overflow-wrap: anywhere;
+}
+
+.excel thead th {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+
+.areas th {
+  color: #fff;
+  font-size: 10px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.headers th {
+  top: 33px;
+  background: #eef3f9;
+  color: #334155;
+  font-size: 10px;
+  font-weight: 900;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
+.area-lider {
+  background: #263647;
+}
+
+.area-ingenieria {
+  background: #2367a6;
+}
+
+.area-calidad {
+  background: #14845b;
+}
+
+.area-mantenimiento {
+  background: #c76716;
+}
+
+.area-compras {
+  background: #7a5195;
+}
+
+.area-desarrollo {
+  background: #007c91;
+}
+
+tbody tr:nth-child(even) {
+  background: var(--surface-soft);
+}
+
+tbody tr:hover {
+  background: #eef6ff;
+}
+
+.excel input {
+  width: 100%;
+  min-width: 0;
+  min-height: 34px;
+  border: 1px solid #cfd8e6;
+  border-radius: 6px;
+  background: #fff;
+  padding: 5px 4px;
+  text-align: center;
+  outline: none;
+}
+
+.excel input[type="text"] {
+  min-width: 0;
+  text-align: left;
+}
+
+.fila-comida td {
+  background: #fff8e6;
+  color: #8a5a00;
+  font-weight: 900;
+}
+
+.mensaje {
+  height: 160px;
+  color: var(--muted);
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.total td {
+  position: sticky;
+  bottom: 0;
+  z-index: 3;
+  background: #152333;
+  color: #fff;
+  font-weight: 900;
+}
+
+@media (max-width: 900px) {
+  .app {
+    padding: 16px;
+  }
+
+  .app-header,
+  .board-toolbar {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .header-actions {
+    justify-content: stretch;
+  }
+
+  .header-actions button {
+    flex: 1;
+  }
+
+  .control-panel,
+  .summary-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .tabla-container {
+    max-height: none;
+  }
+
+  .excel {
+    min-width: 1320px;
+    table-layout: auto;
+  }
+
+  .excel th,
+  .excel td {
+    padding: 5px 6px;
+    font-size: 12px;
+    line-height: 1.1;
+  }
+
+  .areas th,
+  .headers th {
+    font-size: 11px;
+  }
+
+  .excel input {
+    min-width: 72px;
+    min-height: 30px;
+    padding: 4px 6px;
+  }
+
+  .excel input[type="text"] {
+    min-width: 140px;
+  }
+
+  .excel th:nth-child(1),
+  .excel td:nth-child(1) {
+    width: 82px;
+    white-space: nowrap;
+  }
+
+  .excel th:nth-child(2),
+  .excel td:nth-child(2) {
+    width: 104px;
+    white-space: nowrap;
+  }
+
+  .total td {
+    padding-top: 5px;
+    padding-bottom: 5px;
+  }
+}
+
+@media print {
+  body {
+    background: #fff;
+  }
+
+  .app {
+    width: 100%;
+    padding: 0;
+  }
+
+  .header-actions,
+  .summary-grid {
+    display: none;
+  }
+
+  .board,
+  .control-panel {
+    box-shadow: none;
+  }
+
+  .tabla-container {
+    max-height: none;
+    overflow: visible;
+  }
+}

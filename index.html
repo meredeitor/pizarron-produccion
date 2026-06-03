@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pizarrón de Producción</title>
+  <meta name="theme-color" content="#1f6feb">
+  <link rel="manifest" href="pwa/manifest.json">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <link rel="stylesheet" href="css/styles.css">
+  <script type="module" src="js/app.js"></script>
+</head>
+
+<body>
+  <main class="app">
+    <header class="app-header">
+      <div>
+        <span class="eyebrow">Tablero operativo</span>
+        <h1>Pizarrón de Producción</h1>
+      </div>
+
+      <div class="header-actions">
+        <button type="button" class="ghost-button" id="btnLimpiar" title="Limpiar tablero">
+          <span aria-hidden="true">↺</span>
+          Limpiar
+        </button>
+        <button type="button" class="primary-button" id="btnImprimir" title="Imprimir tablero">
+          <span aria-hidden="true">▣</span>
+          Imprimir
+        </button>
+      </div>
+    </header>
+
+    <section class="control-panel" aria-label="Filtros del tablero">
+      <div class="campo">
+        <label for="selectPlanta">Planta</label>
+        <select id="selectPlanta">
+          <option value="">Selecciona planta</option>
+          <option value="1">Planta 1 - Dan Post</option>
+          <option value="2">Planta 2 - Marcas propias</option>
+          <option value="3">Planta 3 - Hyer</option>
+          <option value="4">Planta 4 - Procesos Especiales</option>
+          <option value="5">Planta 5 - Avíos</option>
+        </select>
+      </div>
+
+      <div class="campo">
+        <label for="selectProceso">Proceso</label>
+        <select id="selectProceso">
+          <option value="">Selecciona planta primero</option>
+        </select>
+      </div>
+
+      <div class="campo">
+        <label for="selectFecha">Fecha</label>
+        <input type="date" id="selectFecha">
+      </div>
+    </section>
+
+    <section class="summary-grid" aria-label="Resumen de producción">
+      <article class="metric-card">
+        <span>Meta diaria</span>
+        <strong id="kpi-meta">855</strong>
+        <small>pares programados</small>
+      </article>
+      <article class="metric-card">
+        <span>Pares producidos</span>
+        <strong id="kpi-pares">0</strong>
+        <small>capturados</small>
+      </article>
+      <article class="metric-card warning">
+        <span>Pares afectados</span>
+        <strong id="kpi-afectados">0</strong>
+        <small>paros y faltantes</small>
+      </article>
+      <article class="metric-card success">
+        <span>Entregados</span>
+        <strong id="kpi-entregados">0</strong>
+        <small>al cierre</small>
+      </article>
+    </section>
+
+    <section class="board">
+      <div class="board-toolbar">
+        <div>
+          <span class="board-label">Captura por hora</span>
+          <h2>
+            <span id="tituloProceso">Selecciona proceso</span>
+            <span id="fechaLabel"></span>
+          </h2>
+        </div>
+        <span class="status-pill" id="estadoTablero">Pendiente de selección</span>
+      </div>
+
+      <div class="tabla-container">
+        <table class="excel">
+          <thead>
+            <tr class="areas">
+              <th colspan="2"></th>
+              <th class="area-lider">Líder</th>
+              <th colspan="2" class="area-ingenieria">Ingeniería</th>
+              <th colspan="2" class="area-calidad">Calidad</th>
+              <th colspan="2" class="area-mantenimiento">Mantenimiento</th>
+              <th colspan="2" class="area-compras">Compras</th>
+              <th colspan="2" class="area-desarrollo">Desarrollo</th>
+              <th class="area-lider">Líder</th>
+              <th class="area-lider">Líder</th>
+            </tr>
+
+            <tr class="headers">
+              <th>Meta</th>
+              <th>Hora</th>
+              <th>Pares</th>
+              <th>Causa de paro</th>
+              <th>Pares afectados</th>
+              <th>Indicador de calidad</th>
+              <th>Pares defectuosos</th>
+              <th>Paro mtto</th>
+              <th>Pares afectados</th>
+              <th>Falta material</th>
+              <th>Pares afectados</th>
+              <th>Paro desarrollo</th>
+              <th>Pares afectados</th>
+              <th>Inventario</th>
+              <th>Entregados</th>
+            </tr>
+          </thead>
+
+          <tbody id="tabla">
+            <tr>
+              <td colspan="15" class="mensaje">
+                Selecciona planta, proceso y fecha para iniciar la captura.
+              </td>
+            </tr>
+          </tbody>
+
+          <tfoot>
+            <tr class="total">
+              <td>Total</td>
+              <td></td>
+              <td id="total-pares">0</td>
+              <td></td>
+              <td id="total-afectadosIng">0</td>
+              <td id="total-calidad">0</td>
+              <td id="total-defectos">0</td>
+              <td></td>
+              <td id="total-afectadosMtto">0</td>
+              <td></td>
+              <td id="total-afectadosCompras">0</td>
+              <td></td>
+              <td id="total-afectadosDesarrollo">0</td>
+              <td id="total-inventario">0</td>
+              <td id="total-entregados">0</td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    </section>
+  </main>
+  <script>
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker.register("service-worker.js")
+          .catch(error => console.error("No se pudo registrar el service worker:", error));
+      });
+    }
+  </script>
+</body>
+</html>
