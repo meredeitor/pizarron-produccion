@@ -20,9 +20,11 @@
       </div>
 
       <div class="header-actions">
-        <button type="button" class="ghost-button" id="btnLimpiar" title="Limpiar tablero">
-          <span aria-hidden="true">↺</span>
-          Limpiar
+        <button type="button" class="ghost-button" id="btnResumenDiario" title="Ver resumen diario">
+          Diario
+        </button>
+        <button type="button" class="ghost-button" id="btnResumenSemanal" title="Ver resumen semanal">
+          Semanal
         </button>
         <button type="button" class="primary-button" id="btnImprimir" title="Imprimir tablero">
           <span aria-hidden="true">▣</span>
@@ -57,7 +59,7 @@
       </div>
     </section>
 
-    <section class="summary-grid" aria-label="Resumen de producción">
+    <section class="summary-grid" id="resumenKpis" aria-label="Resumen de producción">
       <article class="metric-card">
         <span>Meta diaria</span>
         <strong id="kpi-meta">855</strong>
@@ -157,6 +159,22 @@
       </div>
     </section>
   </main>
+
+  <dialog class="modal-resumen" id="modalResumen">
+    <div class="modal-panel">
+      <header class="modal-header">
+        <div>
+          <span class="eyebrow" id="modalEyebrow">Resumen</span>
+          <h2 id="modalTitulo">Resumen de producción</h2>
+        </div>
+        <button type="button" class="ghost-button icon-button" id="btnCerrarResumen" title="Cerrar resumen">
+          <span aria-hidden="true">×</span>
+        </button>
+      </header>
+      <div class="modal-body" id="modalContenido"></div>
+    </div>
+  </dialog>
+
   <script>
     if ("serviceWorker" in navigator) {
       window.addEventListener("load", () => {

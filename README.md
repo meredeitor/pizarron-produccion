@@ -7,6 +7,7 @@ Aplicacion web para capturar y consultar tableros de produccion por planta, proc
 - Captura por hora de pares, paros, calidad, mantenimiento, compras, desarrollo, inventario y entregados.
 - Metas parametrizadas por planta.
 - Procesos dependientes de la planta seleccionada.
+- Vista de todos los procesos de una planta en una sola tabla.
 - Horarios de comida dependientes de planta y proceso.
 - Totales y KPIs calculados automaticamente.
 - Guardado automatico en Firestore.
@@ -105,6 +106,8 @@ Planta 4: 8200 / 5 = 1640 diarios
 Cuando la division por hora deja decimales, el sistema reparte el sobrante en unidades completas para que el total diario cuadre.
 
 ### Procesos
+
+Al seleccionar una planta, la app muestra por defecto la opcion `Todos los procesos` para capturar todo el tablero sin entrar proceso por proceso. Tambien se puede seleccionar un proceso individual desde el selector.
 
 ```text
 P1, P2, P3:
