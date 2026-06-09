@@ -49,7 +49,8 @@ const PROCESOS_POR_PLANTA = {
 const PROCESO_FINAL_POR_PLANTA = {
   "1": "Adorno",
   "2": "Adorno",
-  "3": "Adorno"
+  "3": "Adorno",
+  "4": "Maquilas"
 };
 const HORAS_JORNADA = [
   "8:00 A 9:00",
