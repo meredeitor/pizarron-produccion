@@ -117,6 +117,11 @@ button {
   border-color: #b8c4d8;
 }
 
+.icon-button {
+  width: 40px;
+  padding: 0;
+}
+
 .control-panel,
 .summary-grid,
 .board {
@@ -162,7 +167,8 @@ button {
 
 .campo select:focus,
 .campo input:focus,
-.excel input:focus {
+.excel input:focus,
+.excel textarea:focus {
   border-color: var(--primary);
   box-shadow: 0 0 0 3px rgba(31, 111, 235, 0.14);
 }
@@ -171,6 +177,10 @@ button {
   display: grid;
   grid-template-columns: repeat(4, minmax(150px, 1fr));
   gap: 12px;
+}
+
+.summary-grid-procesos {
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
 }
 
 .metric-card {
@@ -206,6 +216,14 @@ button {
 
 .metric-card.warning strong {
   color: var(--warning);
+}
+
+.metric-card-proceso {
+  min-height: 104px;
+}
+
+.metric-card-proceso strong {
+  color: var(--primary);
 }
 
 .board {
@@ -266,7 +284,8 @@ button {
 
 .excel {
   width: 100%;
-  table-layout: fixed;
+  min-width: 1480px;
+  table-layout: auto;
   border-collapse: separate;
   border-spacing: 0;
 }
@@ -281,6 +300,7 @@ button {
   font-size: 11px;
   line-height: 1.18;
   overflow-wrap: anywhere;
+  overflow: hidden;
 }
 
 .excel thead th {
@@ -338,27 +358,63 @@ tbody tr:hover {
   background: #eef6ff;
 }
 
-.excel input {
+.excel input,
+.excel textarea {
   width: 100%;
   min-width: 0;
   min-height: 34px;
   border: 1px solid #cfd8e6;
-  border-radius: 6px;
+  border-radius: 4px;
   background: #fff;
-  padding: 5px 4px;
+  padding: 5px 6px;
   text-align: center;
   outline: none;
 }
 
-.excel input[type="text"] {
-  min-width: 0;
+.excel textarea {
+  max-height: 180px;
+  resize: none;
+  overflow: hidden;
   text-align: left;
+  line-height: 1.25;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  display: block;
+}
+
+.celda-texto {
+  min-width: 130px;
+  text-align: left;
+}
+
+.celda-texto.tiene-texto {
+  min-width: 220px;
 }
 
 .fila-comida td {
   background: #fff8e6;
   color: #8a5a00;
   font-weight: 900;
+}
+
+.proceso-separador td {
+  background: #172033;
+  color: #fff;
+  padding: 10px 14px;
+  text-align: left;
+}
+
+.proceso-separador span {
+  display: inline-block;
+  margin-right: 12px;
+  font-size: 14px;
+  font-weight: 900;
+}
+
+.proceso-separador small {
+  color: #c9d5e8;
+  font-size: 12px;
+  font-weight: 800;
 }
 
 .mensaje {
@@ -375,6 +431,272 @@ tbody tr:hover {
   background: #152333;
   color: #fff;
   font-weight: 900;
+}
+
+.total-proceso td {
+  background: #e7edf6;
+  color: #182437;
+  font-weight: 900;
+}
+
+.total-proceso td:first-child,
+.total-proceso td:nth-child(2) {
+  text-transform: uppercase;
+}
+
+.modal-resumen {
+  width: min(1120px, calc(100vw - 28px));
+  max-height: calc(100vh - 34px);
+  border: 0;
+  border-radius: 8px;
+  padding: 0;
+  box-shadow: 0 24px 60px rgba(15, 23, 42, 0.28);
+}
+
+.modal-resumen::backdrop {
+  background: rgba(15, 23, 42, 0.42);
+}
+
+.modal-panel {
+  background: var(--surface);
+}
+
+.modal-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 18px;
+  border-bottom: 1px solid var(--line);
+}
+
+.modal-body {
+  padding: 18px;
+}
+
+.resumen-scroll {
+  overflow: auto;
+}
+
+.resumen-grafica {
+  margin-bottom: 18px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fbfcff;
+  padding: 14px;
+}
+
+.grafica-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+  margin-bottom: 12px;
+}
+
+.grafica-header h3 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.grafica-header small {
+  color: var(--muted);
+  font-weight: 800;
+}
+
+.grafica-barras {
+  display: grid;
+  gap: 11px;
+}
+
+.grafica-diaria-layout,
+.grafica-semanal-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 220px;
+  align-items: center;
+  gap: 18px;
+}
+
+.barra-fila {
+  display: grid;
+  grid-template-columns: 130px minmax(220px, 1fr) 84px;
+  align-items: center;
+  gap: 12px;
+}
+
+.barra-label,
+.barra-dato {
+  color: #334155;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.barra-dato {
+  text-align: right;
+}
+
+.barra-stack {
+  display: grid;
+  gap: 5px;
+}
+
+.barra-linea {
+  display: grid;
+  grid-template-columns: 76px 1fr 48px;
+  align-items: center;
+  gap: 8px;
+}
+
+.barra-linea span,
+.barra-linea strong {
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.barra-linea strong {
+  text-align: right;
+}
+
+.barra-track {
+  height: 9px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #e7edf6;
+}
+
+.barra-fill {
+  height: 100%;
+  min-width: 2px;
+  border-radius: 999px;
+}
+
+.barra-primary {
+  background: var(--primary);
+}
+
+.barra-success {
+  background: var(--success);
+}
+
+.gauge-cumplimiento {
+  display: grid;
+  justify-items: center;
+  gap: 10px;
+  border-left: 1px solid var(--line);
+  padding-left: 18px;
+}
+
+.gauge-arco {
+  width: 168px;
+  aspect-ratio: 1;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background:
+    conic-gradient(var(--success) calc(var(--avance) * 1%), #e7edf6 0);
+}
+
+.gauge-centro {
+  width: 124px;
+  aspect-ratio: 1;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  border-radius: 50%;
+  background: var(--surface);
+  box-shadow: inset 0 0 0 1px var(--line);
+}
+
+.gauge-centro strong {
+  color: #0f172a;
+  font-size: 34px;
+  line-height: 1;
+}
+
+.gauge-centro span,
+.gauge-datos small {
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.gauge-datos {
+  display: grid;
+  justify-items: center;
+  gap: 2px;
+  text-align: center;
+}
+
+.gauge-datos span {
+  color: #334155;
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.grafica-semana {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(175px, 1fr));
+  gap: 10px;
+}
+
+.dia-card {
+  display: grid;
+  gap: 8px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+  padding: 10px;
+}
+
+.dia-card > span {
+  color: #334155;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.dia-card small {
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.tabla-resumen {
+  width: 100%;
+  min-width: 760px;
+  border-collapse: collapse;
+}
+
+.tabla-resumen th,
+.tabla-resumen td {
+  border: 1px solid var(--line);
+  padding: 9px 10px;
+  text-align: right;
+  font-size: 13px;
+}
+
+.tabla-resumen th:first-child,
+.tabla-resumen td:first-child {
+  text-align: left;
+}
+
+.tabla-resumen th {
+  background: #eef3f9;
+  color: #334155;
+  font-weight: 900;
+}
+
+.fila-total-resumen td {
+  background: #172033;
+  color: #fff;
+  font-weight: 900;
+}
+
+.mensaje-resumen {
+  margin: 0;
+  color: var(--muted);
+  font-weight: 700;
 }
 
 @media (max-width: 900px) {
@@ -406,7 +728,7 @@ tbody tr:hover {
   }
 
   .excel {
-    min-width: 1320px;
+    min-width: 1480px;
     table-layout: auto;
   }
 
@@ -422,14 +744,19 @@ tbody tr:hover {
     font-size: 11px;
   }
 
-  .excel input {
-    min-width: 72px;
+  .excel input,
+  .excel textarea {
+    min-width: 0;
     min-height: 30px;
     padding: 4px 6px;
   }
 
-  .excel input[type="text"] {
+  .celda-texto {
     min-width: 140px;
+  }
+
+  .celda-texto.tiene-texto {
+    min-width: 220px;
   }
 
   .excel th:nth-child(1),
@@ -447,6 +774,30 @@ tbody tr:hover {
   .total td {
     padding-top: 5px;
     padding-bottom: 5px;
+  }
+
+  .barra-fila {
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+
+  .grafica-diaria-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .grafica-semanal-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .gauge-cumplimiento {
+    border-left: 0;
+    border-top: 1px solid var(--line);
+    padding-left: 0;
+    padding-top: 14px;
+  }
+
+  .barra-dato {
+    text-align: left;
   }
 }
 
