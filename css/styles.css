@@ -117,6 +117,15 @@ button {
   border-color: #b8c4d8;
 }
 
+.button-icon {
+  display: inline-grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  font-size: 13px;
+  line-height: 1;
+}
+
 .icon-button {
   width: 40px;
   padding: 0;
@@ -284,7 +293,7 @@ button {
 
 .excel {
   width: 100%;
-  min-width: 1480px;
+  min-width: 1800px;
   table-layout: auto;
   border-collapse: separate;
   border-spacing: 0;
@@ -348,6 +357,10 @@ button {
 
 .area-desarrollo {
   background: #007c91;
+}
+
+.area-doh {
+  background: #49566d;
 }
 
 tbody tr:nth-child(even) {
@@ -442,6 +455,24 @@ tbody tr:hover {
 .total-proceso td:first-child,
 .total-proceso td:nth-child(2) {
   text-transform: uppercase;
+}
+
+.scroll-proceso-row td {
+  background: #f8fafc;
+  padding: 7px 0;
+}
+
+.scroll-proceso {
+  position: sticky;
+  left: 0;
+  box-sizing: border-box;
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+.scroll-proceso-contenido {
+  height: 1px;
 }
 
 .modal-resumen {
@@ -687,6 +718,34 @@ tbody tr:hover {
   font-weight: 900;
 }
 
+.tabla-defectos {
+  min-width: 680px;
+}
+
+.tabla-defectos th:nth-child(3),
+.tabla-defectos td:nth-child(3) {
+  text-align: left;
+}
+
+.resumen-detalle {
+  margin-top: 18px;
+}
+
+.resumen-detalle h3 {
+  margin: 0 0 10px;
+  color: #172033;
+  font-size: 16px;
+}
+
+.tabla-afectados {
+  min-width: 640px;
+}
+
+.tabla-afectados th:nth-child(2),
+.tabla-afectados td:nth-child(2) {
+  text-align: left;
+}
+
 .fila-total-resumen td {
   background: #172033;
   color: #fff;
@@ -728,7 +787,7 @@ tbody tr:hover {
   }
 
   .excel {
-    min-width: 1480px;
+    min-width: 1800px;
     table-layout: auto;
   }
 
@@ -802,6 +861,10 @@ tbody tr:hover {
 }
 
 @media print {
+  .scroll-proceso-row {
+    display: none;
+  }
+
   body {
     background: #fff;
   }
