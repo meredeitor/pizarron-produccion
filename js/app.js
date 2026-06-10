@@ -18,6 +18,7 @@ let tableroRefsActuales = [];
 let detenerEscuchasTablero = [];
 let guardadoTimer = null;
 let aplicandoCambiosRemotos = false;
+let sincronizandoScrollHorizontal = false;
 
 const TODOS_PROCESOS = "__todos__";
 const firebaseConfig = {
@@ -99,12 +100,15 @@ const CAMPOS_CAPTURA = [
   { id: "afectadosIng", tipo: "number", clase: "afectadosIng", label: "Pares afectados ingenieria" },
   { id: "calidad", tipo: "percent", clase: "calidad", label: "Indicador de calidad" },
   { id: "defectos", tipo: "number", clase: "defectos", label: "Pares defectuosos" },
+  { id: "principalDefecto", tipo: "text", label: "Principal defecto" },
   { id: "paroMtto", tipo: "text", label: "Paro mantenimiento" },
   { id: "afectadosMtto", tipo: "number", clase: "afectadosMtto", label: "Pares afectados mantenimiento" },
   { id: "faltaMaterial", tipo: "text", label: "Falta material" },
   { id: "afectadosCompras", tipo: "number", clase: "afectadosCompras", label: "Pares afectados compras" },
   { id: "paroDesarrollo", tipo: "text", label: "Paro desarrollo" },
   { id: "afectadosDesarrollo", tipo: "number", clase: "afectadosDesarrollo", label: "Pares afectados desarrollo" },
+  { id: "paroDoh", tipo: "text", label: "Paro DOH" },
+  { id: "afectadosDoh", tipo: "number", clase: "afectadosDoh", label: "Pares afectados DOH" },
   { id: "inventario", tipo: "number", clase: "inventario", label: "Inventario" },
   { id: "entregados", tipo: "number", clase: "entregados", label: "Pares entregados" }
 ];
@@ -116,6 +120,7 @@ const CAMPOS_TOTAL_PROCESO = [
   { clase: "afectadosMtto", campo: "afectadosMtto" },
   { clase: "afectadosCompras", campo: "afectadosCompras" },
   { clase: "afectadosDesarrollo", campo: "afectadosDesarrollo" },
+  { clase: "afectadosDoh", campo: "afectadosDoh" },
   { clase: "inventario", campo: "inventario" },
   { clase: "entregados", campo: "entregados" }
 ];
@@ -132,6 +137,8 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("selectFecha").addEventListener("change", validarSeleccion);
   document.getElementById("btnResumenDiario").addEventListener("click", mostrarResumenDiario);
   document.getElementById("btnResumenSemanal").addEventListener("click", mostrarResumenSemanal);
+  document.getElementById("btnDefectosDiario").addEventListener("click", mostrarTopDefectosDiario);
+  document.getElementById("btnDefectosSemanal").addEventListener("click", mostrarTopDefectosSemanal);
   document.getElementById("btnCerrarResumen").addEventListener("click", cerrarModalResumen);
   document.getElementById("btnImprimir").addEventListener("click", () => window.print());
 
@@ -185,6 +192,7 @@ function cargarTabla() {
   });
 
   activarEventosCaptura();
+  configurarScrollHorizontalProcesos();
   calcularTotales();
   conectarTableroTiempoReal();
 }
@@ -200,7 +208,7 @@ function cargarFilasProceso(tabla, proceso) {
         <tr class="fila-comida">
           <td>-</td>
           <td>${hora}</td>
-          <td colspan="13">TIEMPO DE COMIDA - ${proceso}</td>
+          <td colspan="16">TIEMPO DE COMIDA - ${proceso}</td>
         </tr>
       `;
       return;
@@ -224,7 +232,7 @@ function generarEncabezadoProceso(proceso) {
 
   return `
     <tr class="proceso-separador">
-      <td colspan="15">
+      <td colspan="18">
         <span>${proceso}</span>
         <small>Comida: ${horaComida}</small>
       </td>
@@ -293,13 +301,23 @@ function generarTotalProceso(proceso) {
       <td data-total-proceso="${proceso}" data-campo-total="calidad">0</td>
       <td data-total-proceso="${proceso}" data-campo-total="defectos">0</td>
       <td></td>
+      <td></td>
       <td data-total-proceso="${proceso}" data-campo-total="afectadosMtto">0</td>
       <td></td>
       <td data-total-proceso="${proceso}" data-campo-total="afectadosCompras">0</td>
       <td></td>
       <td data-total-proceso="${proceso}" data-campo-total="afectadosDesarrollo">0</td>
+      <td></td>
+      <td data-total-proceso="${proceso}" data-campo-total="afectadosDoh">0</td>
       <td data-total-proceso="${proceso}" data-campo-total="inventario">0</td>
       <td data-total-proceso="${proceso}" data-campo-total="entregados">0</td>
+    </tr>
+    <tr class="scroll-proceso-row">
+      <td colspan="18">
+        <div class="scroll-proceso" tabindex="0" aria-label="Mover tabla horizontalmente despues de ${proceso}">
+          <div class="scroll-proceso-contenido"></div>
+        </div>
+      </td>
     </tr>
   `;
 }
@@ -316,6 +334,55 @@ function activarEventosCaptura() {
   });
 }
 
+function configurarScrollHorizontalProcesos() {
+  const contenedor = document.querySelector(".tabla-container");
+  const tabla = document.querySelector(".excel");
+  const barras = document.querySelectorAll(".scroll-proceso");
+
+  if (!contenedor || !tabla || !barras.length) {
+    return;
+  }
+
+  const anchoTabla = tabla.scrollWidth;
+  const anchoVisible = contenedor.clientWidth;
+
+  barras.forEach(barra => {
+    const contenido = barra.querySelector(".scroll-proceso-contenido");
+
+    barra.style.width = `${anchoVisible}px`;
+
+    if (contenido) {
+      contenido.style.width = `${anchoTabla}px`;
+    }
+
+    barra.scrollLeft = contenedor.scrollLeft;
+    barra.onscroll = () => sincronizarScrollHorizontal(barra, contenedor, barras);
+  });
+
+  contenedor.onscroll = () => sincronizarScrollHorizontal(contenedor, contenedor, barras);
+  window.onresize = configurarScrollHorizontalProcesos;
+}
+
+function sincronizarScrollHorizontal(origen, contenedor, barras) {
+  if (sincronizandoScrollHorizontal) {
+    return;
+  }
+
+  sincronizandoScrollHorizontal = true;
+
+  if (origen !== contenedor) {
+    contenedor.scrollLeft = origen.scrollLeft;
+  }
+
+  barras.forEach(barra => {
+    if (barra !== origen) {
+      barra.scrollLeft = contenedor.scrollLeft;
+    }
+  });
+
+  sincronizandoScrollHorizontal = false;
+}
+
 function calcularTotales() {
   actualizarVisibilidadTotalGeneral();
   const pares = calcularColumna("pares", "total-pares");
@@ -325,6 +392,7 @@ function calcularTotales() {
   const afectadosMtto = calcularColumna("afectadosMtto", "total-afectadosMtto");
   const afectadosCompras = calcularColumna("afectadosCompras", "total-afectadosCompras");
   const afectadosDesarrollo = calcularColumna("afectadosDesarrollo", "total-afectadosDesarrollo");
+  const afectadosDoh = calcularColumna("afectadosDoh", "total-afectadosDoh");
   const inventario = calcularColumna("inventario", "total-inventario");
   const entregados = calcularColumna("entregados", "total-entregados");
 
@@ -448,12 +516,12 @@ function obtenerResumenProceso(proceso) {
   const afectadosMtto = sumarColumnaPorProceso(proceso, "afectadosMtto");
   const afectadosCompras = sumarColumnaPorProceso(proceso, "afectadosCompras");
   const afectadosDesarrollo = sumarColumnaPorProceso(proceso, "afectadosDesarrollo");
-  const defectos = sumarColumnaPorProceso(proceso, "defectos");
+  const afectadosDoh = sumarColumnaPorProceso(proceso, "afectadosDoh");
 
   return {
     meta: obtenerMetaDiaria(plantaActual),
     pares: sumarColumnaPorProceso(proceso, "pares"),
-    afectados: afectadosIng + afectadosMtto + afectadosCompras + afectadosDesarrollo + defectos,
+    afectados: afectadosIng + afectadosMtto + afectadosCompras + afectadosDesarrollo + afectadosDoh,
     entregados: sumarColumnaPorProceso(proceso, "entregados")
   };
 }
@@ -644,7 +712,7 @@ async function mostrarResumenDiario() {
   try {
     const documentos = await consultarTablerosPorFechas(fechaActual, fechaActual);
     const resumen = resumirDocumentos(documentos);
-    mostrarTablaResumenDiario(resumen, fechaActual);
+    mostrarTablaResumenDiario(resumen, fechaActual, documentos);
   } catch (error) {
     console.error("Error al cargar resumen diario:", error);
     mostrarErrorResumen("No se pudo cargar el resumen diario.");
@@ -666,10 +734,47 @@ async function mostrarResumenSemanal() {
   try {
     const documentos = await consultarTablerosPorFechas(rango.inicio, rango.fin);
     const resumen = resumirDocumentos(documentos);
-    mostrarTablaResumenSemanal(resumen, rango);
+    mostrarTablaResumenSemanal(resumen, rango, documentos);
   } catch (error) {
     console.error("Error al cargar resumen semanal:", error);
     mostrarErrorResumen("No se pudo cargar el resumen semanal.");
+  }
+}
+
+async function mostrarTopDefectosDiario() {
+  if (!validarFiltrosResumen()) {
+    return;
+  }
+
+  abrirModalResumen("Top 5 defectos diario", `Planta ${plantaActual} | ${formatearFecha(fechaActual)}`, "Cargando defectos...");
+
+  try {
+    const documentos = await consultarTablerosPorFechas(fechaActual, fechaActual);
+    mostrarTablaTopDefectos(construirTopDefectosPorProceso(documentos), "No hay defectos capturados para ese día.");
+  } catch (error) {
+    console.error("Error al cargar top de defectos diario:", error);
+    mostrarErrorResumen("No se pudo cargar el top de defectos diario.");
+  }
+}
+
+async function mostrarTopDefectosSemanal() {
+  if (!validarFiltrosResumen()) {
+    return;
+  }
+
+  const rango = obtenerRangoSemana(fechaActual);
+  abrirModalResumen(
+    "Top 5 defectos semanal",
+    `Planta ${plantaActual} | ${formatearFecha(rango.inicio)} - ${formatearFecha(rango.fin)}`,
+    "Cargando defectos..."
+  );
+
+  try {
+    const documentos = await consultarTablerosPorFechas(rango.inicio, rango.fin);
+    mostrarTablaTopDefectos(construirTopDefectosPorProceso(documentos), "No hay defectos capturados para esa semana.");
+  } catch (error) {
+    console.error("Error al cargar top de defectos semanal:", error);
+    mostrarErrorResumen("No se pudo cargar el top de defectos semanal.");
   }
 }
 
@@ -729,7 +834,8 @@ function sumarFilas(filas) {
 
     total.pares += numero(fila.pares);
     total.afectados += numero(fila.afectadosIng) + numero(fila.afectadosMtto) +
-      numero(fila.afectadosCompras) + numero(fila.afectadosDesarrollo) + numero(fila.defectos);
+      numero(fila.afectadosCompras) + numero(fila.afectadosDesarrollo) +
+      numero(fila.afectadosDoh);
     total.calidadSuma += calidad;
     total.calidadConteo += fila.calidad === "" || fila.calidad === undefined ? 0 : 1;
     total.defectos += numero(fila.defectos);
@@ -739,6 +845,93 @@ function sumarFilas(filas) {
 
   total.calidad = calcularPromedioCalidad(total);
   return total;
+}
+
+function construirTopDefectosPorProceso(documentos) {
+  const defectosPorProceso = {};
+
+  documentos.forEach(datos => {
+    const proceso = datos.proceso || "Sin proceso";
+
+    if (!defectosPorProceso[proceso]) {
+      defectosPorProceso[proceso] = {};
+    }
+
+    Object.values(datos.filas || {}).forEach(fila => {
+      const defecto = normalizarDefecto(fila.principalDefecto);
+
+      if (!defecto) {
+        return;
+      }
+
+      if (!defectosPorProceso[proceso][defecto]) {
+        defectosPorProceso[proceso][defecto] = {
+          defecto,
+          registros: 0,
+          pares: 0
+        };
+      }
+
+      defectosPorProceso[proceso][defecto].registros += 1;
+      defectosPorProceso[proceso][defecto].pares += numero(fila.defectos);
+    });
+  });
+
+  return Object.fromEntries(
+    Object.entries(defectosPorProceso).map(([proceso, defectos]) => [
+      proceso,
+      Object.values(defectos)
+        .sort((a, b) => b.pares - a.pares || b.registros - a.registros || a.defecto.localeCompare(b.defecto))
+        .slice(0, 5)
+    ])
+  );
+}
+
+function construirDesgloseAfectados(documentos) {
+  const acumulado = {};
+  const areas = [
+    { departamento: "Ingeniería", causa: "causaParo", pares: "afectadosIng" },
+    { departamento: "Mantenimiento", causa: "paroMtto", pares: "afectadosMtto" },
+    { departamento: "Compras", causa: "faltaMaterial", pares: "afectadosCompras" },
+    { departamento: "Desarrollo", causa: "paroDesarrollo", pares: "afectadosDesarrollo" },
+    { departamento: "DOH", causa: "paroDoh", pares: "afectadosDoh" }
+  ];
+
+  documentos.forEach(datos => {
+    Object.values(datos.filas || {}).forEach(fila => {
+      areas.forEach(area => {
+        const pares = numero(fila[area.pares]);
+
+        if (!pares) {
+          return;
+        }
+
+        const causa = normalizarCausaAfectado(fila[area.causa]);
+        const clave = `${area.departamento}__${causa}`;
+
+        if (!acumulado[clave]) {
+          acumulado[clave] = {
+            departamento: area.departamento,
+            causa,
+            pares: 0
+          };
+        }
+
+        acumulado[clave].pares += pares;
+      });
+    });
+  });
+
+  return Object.values(acumulado).sort((a, b) => b.pares - a.pares || a.departamento.localeCompare(b.departamento));
+}
+
+function normalizarCausaAfectado(valor) {
+  const causa = String(valor ?? "").trim().replace(/\s+/g, " ");
+  return causa || "Sin causa capturada";
+}
+
+function normalizarDefecto(valor) {
+  return String(valor ?? "").trim().replace(/\s+/g, " ").toUpperCase();
 }
 
 function numero(valor) {
@@ -770,7 +963,7 @@ function normalizarCampoPorcentaje(input) {
   input.value = formatearPorcentaje(input.value);
 }
 
-function mostrarTablaResumenDiario(resumen, fecha) {
+function mostrarTablaResumenDiario(resumen, fecha, documentos = []) {
   const procesos = obtenerProcesosOrdenados(resumen[fecha] || {});
 
   if (!procesos.length) {
@@ -792,10 +985,11 @@ function mostrarTablaResumenDiario(resumen, fecha) {
         </tbody>
       </table>
     </div>
+    ${generarTablaDesgloseAfectados(construirDesgloseAfectados(documentos))}
   `;
 }
 
-function mostrarTablaResumenSemanal(resumen, rango) {
+function mostrarTablaResumenSemanal(resumen, rango, documentos = []) {
   const fechas = obtenerFechasRango(rango.inicio, rango.fin);
   const procesos = PROCESOS_POR_PLANTA[plantaActual] || [];
   const filas = [];
@@ -824,6 +1018,85 @@ function mostrarTablaResumenSemanal(resumen, rango) {
           ${filas.join("")}
           ${generarFilaResumen(`Total semanal ${etiquetaProcesoFinal()}`, sumarSemanaOperativa(resumen), true)}
         </tbody>
+      </table>
+    </div>
+    ${generarTablaDesgloseAfectados(construirDesgloseAfectados(documentos))}
+  `;
+}
+
+function generarTablaDesgloseAfectados(afectados) {
+  if (!afectados.length) {
+    return `
+      <section class="resumen-detalle">
+        <h3>Desglose de afectados</h3>
+        <p class="mensaje-resumen">No hay pares afectados capturados.</p>
+      </section>
+    `;
+  }
+
+  return `
+    <section class="resumen-detalle">
+      <h3>Desglose de afectados</h3>
+      <div class="resumen-scroll">
+        <table class="tabla-resumen tabla-afectados">
+          <thead>
+            <tr>
+              <th>Departamento</th>
+              <th>Causa del paro</th>
+              <th>Pares</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${afectados.map(item => `
+              <tr>
+                <td>${item.departamento}</td>
+                <td>${item.causa}</td>
+                <td>${item.pares}</td>
+              </tr>
+            `).join("")}
+          </tbody>
+        </table>
+      </div>
+    </section>
+  `;
+}
+
+function mostrarTablaTopDefectos(defectosPorProceso, mensajeVacio) {
+  const procesos = obtenerProcesosOrdenados(defectosPorProceso);
+  const filas = [];
+
+  procesos.forEach(proceso => {
+    (defectosPorProceso[proceso] || []).forEach((defecto, index) => {
+      filas.push(`
+        <tr>
+          <td>${proceso}</td>
+          <td>${index + 1}</td>
+          <td>${defecto.defecto}</td>
+          <td>${defecto.pares}</td>
+          <td>${defecto.registros}</td>
+        </tr>
+      `);
+    });
+  });
+
+  if (!filas.length) {
+    mostrarErrorResumen(mensajeVacio);
+    return;
+  }
+
+  document.getElementById("modalContenido").innerHTML = `
+    <div class="resumen-scroll">
+      <table class="tabla-resumen tabla-defectos">
+        <thead>
+          <tr>
+            <th>Proceso</th>
+            <th>Top</th>
+            <th>Defecto</th>
+            <th>Pares defectuosos</th>
+            <th>Registros</th>
+          </tr>
+        </thead>
+        <tbody>${filas.join("")}</tbody>
       </table>
     </div>
   `;
@@ -1172,7 +1445,7 @@ function limpiarTabla() {
   actualizarVisibilidadTotalGeneral();
   document.getElementById("tabla").innerHTML = `
     <tr>
-      <td colspan="15" class="mensaje">
+      <td colspan="18" class="mensaje">
         Selecciona planta, proceso y fecha para iniciar la captura.
       </td>
     </tr>
@@ -1186,6 +1459,7 @@ function limpiarTabla() {
     "total-afectadosMtto",
     "total-afectadosCompras",
     "total-afectadosDesarrollo",
+    "total-afectadosDoh",
     "total-inventario",
     "total-entregados"
   ].forEach(id => {
