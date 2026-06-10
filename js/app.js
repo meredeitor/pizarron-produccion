@@ -141,6 +141,9 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("btnDefectosSemanal").addEventListener("click", mostrarTopDefectosSemanal);
   document.getElementById("btnCerrarResumen").addEventListener("click", cerrarModalResumen);
   document.getElementById("btnImprimir").addEventListener("click", () => window.print());
+  document.querySelectorAll(".action-menu-panel button").forEach(boton => {
+    boton.addEventListener("click", () => boton.closest("details")?.removeAttribute("open"));
+  });
 
   actualizarProcesos();
   validarSeleccion();
