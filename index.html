@@ -20,22 +20,38 @@
       </div>
 
       <div class="header-actions">
+        <details class="action-menu">
+          <summary class="ghost-button">
+            <span class="menu-icon" aria-hidden="true">&#9638;</span>
+            Resumen
+          </summary>
+          <div class="action-menu-panel">
         <button type="button" class="ghost-button" id="btnResumenDiario" title="Ver resumen diario">
           <span class="button-icon" aria-hidden="true">▦</span>
-          Resumen diario
+          Diario
         </button>
         <button type="button" class="ghost-button" id="btnResumenSemanal" title="Ver resumen semanal">
           <span class="button-icon" aria-hidden="true">▤</span>
-          Resumen semanal
+          Semanal
         </button>
+          </div>
+        </details>
+        <details class="action-menu">
+          <summary class="ghost-button">
+            <span class="menu-icon" aria-hidden="true">&#9671;</span>
+            Defectos
+          </summary>
+          <div class="action-menu-panel">
         <button type="button" class="ghost-button" id="btnDefectosDiario" title="Ver top de defectos diario">
           <span class="button-icon" aria-hidden="true">◇</span>
           Defectos día
         </button>
         <button type="button" class="ghost-button" id="btnDefectosSemanal" title="Ver top de defectos semanal">
           <span class="button-icon" aria-hidden="true">◆</span>
-          Defectos semana
+          Semanal
         </button>
+          </div>
+        </details>
         <button type="button" class="primary-button" id="btnImprimir" title="Imprimir tablero">
           <span class="button-icon" aria-hidden="true">▣</span>
           Imprimir
