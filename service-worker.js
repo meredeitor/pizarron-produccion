@@ -1,4 +1,4 @@
-const CACHE_NAME = "tablero-produccion-v20260609-26";
+const CACHE_NAME = "tablero-produccion-v20260610-32";
 const APP_SHELL = [
   "./",
   "./index.html",
