@@ -21,13 +21,23 @@
 
       <div class="header-actions">
         <button type="button" class="ghost-button" id="btnResumenDiario" title="Ver resumen diario">
-          Diario
+          <span class="button-icon" aria-hidden="true">▦</span>
+          Resumen diario
         </button>
         <button type="button" class="ghost-button" id="btnResumenSemanal" title="Ver resumen semanal">
-          Semanal
+          <span class="button-icon" aria-hidden="true">▤</span>
+          Resumen semanal
+        </button>
+        <button type="button" class="ghost-button" id="btnDefectosDiario" title="Ver top de defectos diario">
+          <span class="button-icon" aria-hidden="true">◇</span>
+          Defectos día
+        </button>
+        <button type="button" class="ghost-button" id="btnDefectosSemanal" title="Ver top de defectos semanal">
+          <span class="button-icon" aria-hidden="true">◆</span>
+          Defectos semana
         </button>
         <button type="button" class="primary-button" id="btnImprimir" title="Imprimir tablero">
-          <span aria-hidden="true">▣</span>
+          <span class="button-icon" aria-hidden="true">▣</span>
           Imprimir
         </button>
       </div>
@@ -101,10 +111,11 @@
               <th colspan="2"></th>
               <th class="area-lider">Líder</th>
               <th colspan="2" class="area-ingenieria">Ingeniería</th>
-              <th colspan="2" class="area-calidad">Calidad</th>
+              <th colspan="3" class="area-calidad">Calidad</th>
               <th colspan="2" class="area-mantenimiento">Mantenimiento</th>
               <th colspan="2" class="area-compras">Compras</th>
               <th colspan="2" class="area-desarrollo">Desarrollo</th>
+              <th colspan="2" class="area-doh">DOH</th>
               <th class="area-lider">Líder</th>
               <th class="area-lider">Líder</th>
             </tr>
@@ -117,11 +128,14 @@
               <th>Pares afectados</th>
               <th>Indicador de calidad</th>
               <th>Pares defectuosos</th>
+              <th>Principal defecto</th>
               <th>Paro mtto</th>
               <th>Pares afectados</th>
               <th>Falta material</th>
               <th>Pares afectados</th>
               <th>Paro desarrollo</th>
+              <th>Pares afectados</th>
+              <th>Paro DOH</th>
               <th>Pares afectados</th>
               <th>Inventario</th>
               <th>Entregados</th>
@@ -130,7 +144,7 @@
 
           <tbody id="tabla">
             <tr>
-              <td colspan="15" class="mensaje">
+              <td colspan="18" class="mensaje">
                 Selecciona planta, proceso y fecha para iniciar la captura.
               </td>
             </tr>
@@ -146,11 +160,14 @@
               <td id="total-calidad">0</td>
               <td id="total-defectos">0</td>
               <td></td>
+              <td></td>
               <td id="total-afectadosMtto">0</td>
               <td></td>
               <td id="total-afectadosCompras">0</td>
               <td></td>
               <td id="total-afectadosDesarrollo">0</td>
+              <td></td>
+              <td id="total-afectadosDoh">0</td>
               <td id="total-inventario">0</td>
               <td id="total-entregados">0</td>
             </tr>
